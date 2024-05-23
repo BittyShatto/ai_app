@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 import 'dart:io';
 
 import 'package:dash_chat_2/dash_chat_2.dart';
@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> {
         currentUser: currentUser,
         onSend: _sendMessage,
         messages: messages);
-  }
+  }  
 
   void _sendMessage(ChatMessage chatMessage) {
     setState(() {
