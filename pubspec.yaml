@@ -38,6 +38,8 @@ dependencies:
   flutter_gemini: ^2.0.3
   dash_chat_2: ^0.0.20
   image_picker: ^1.1.1
+  flutter_charts: ^0.5.2
+  fl_chart: ^0.68.0
 
 dev_dependencies:
   flutter_test:
@@ -63,7 +65,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   # assets:
-  #   - images/a_dot_burr.jpeg
+    
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
