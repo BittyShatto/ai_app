@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
   List<Map<String, String>> dummyData = [
     {
       "deal_id": "1",
-      "client_name": "John Doe",
+      "client_name": "John",
       "customer_code": "C001",
       "deal_stage": "Negotiation",
       "enquiry": "Looking for bulk order of widgets",
@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
     },
     {
       "deal_id": "2",
-      "client_name": "Jane Smith",
+      "client_name": "Smith",
       "customer_code": "C002",
       "deal_stage": "Initial Contact",
       "enquiry": "Interested in pricing and availability",
