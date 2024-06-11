@@ -128,12 +128,8 @@ class _HomePageState extends State<HomePage> {
           isTyping = false; // Hide typing indicator
         });
 
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => GraphPage(dummyData: dummyData),
-          ),
-        );
+        // Ask for graph options
+        _showGraphOptions();
       } else {
         String response = _generateResponse(chatMessage.text);
 
@@ -149,6 +145,56 @@ class _HomePageState extends State<HomePage> {
         });
       }
     });
+  }
+
+  void _showGraphOptions() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Select Graph Type"),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                GestureDetector(
+                  child: Text("Line Graph"),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _showGraphPage(ChartType.line);
+                  },
+                ),
+                GestureDetector(
+                  child: Text("Bar Chart"),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _showGraphPage(ChartType.bar);
+                  },
+                ),
+                GestureDetector(
+                  child: Text("Pie Chart"),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _showGraphPage(ChartType.pie);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showGraphPage(ChartType selectedChartType) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => GraphPage(
+          dummyData: dummyData,
+          selectedChartType: selectedChartType,
+        ),
+      ),
+    );
   }
 
   String _generateResponse(String query) {
