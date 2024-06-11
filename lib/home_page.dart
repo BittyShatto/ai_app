@@ -1,7 +1,7 @@
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:fl_chart/fl_chart.dart'; // Import fl_chart package
+import 'graph_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -13,7 +13,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<ChatMessage> messages = [];
   bool isTyping = false;
-  bool showGraph = false; // Flag to control whether to show the graph
 
   ChatUser currentUser = ChatUser(id: "0", firstName: "User");
   ChatUser geminiUser = ChatUser(
@@ -53,7 +52,7 @@ class _HomePageState extends State<HomePage> {
       "deal_id": "4",
       "client_name": "Michael",
       "customer_code": "C004",
-      "deal_stage": "Customer ",
+      "deal_stage": "Customer",
       "enquiry": "Looking for home insurance options",
       "value": "4"
     },
@@ -61,7 +60,7 @@ class _HomePageState extends State<HomePage> {
       "deal_id": "5",
       "client_name": "Emily",
       "customer_code": "C005",
-      "deal_stage": "Prospect ",
+      "deal_stage": "Prospect",
       "enquiry": "Wants information on retirement planning",
       "value": "1"
     },
@@ -77,10 +76,14 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: [
-          Expanded(child: _buildChatUI()),
+          Expanded(
+            child: Column(
+              children: [
+                Expanded(child: _buildChatUI()),
+              ],
+            ),
+          ),
           if (isTyping) _buildTypingIndicator(),
-          // Only show the graph if the showGraph flag is true
-          if (showGraph) _buildGraph(), // Add graph widget
         ],
       ),
     );
@@ -119,33 +122,36 @@ class _HomePageState extends State<HomePage> {
       isTyping = true; // Show typing indicator
     });
 
-    // Use mock data for testing
     Future.delayed(const Duration(seconds: 2), () {
-      String response = _generateResponse(chatMessage.text);
+      if (chatMessage.text.toLowerCase().contains("graph")) {
+        setState(() {
+          isTyping = false; // Hide typing indicator
+        });
 
-      ChatMessage message = ChatMessage(
-        user: geminiUser,
-        createdAt: DateTime.now(),
-        text: response,
-      );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => GraphPage(dummyData: dummyData),
+          ),
+        );
+      } else {
+        String response = _generateResponse(chatMessage.text);
 
-      setState(() {
-        isTyping = false; // Hide typing indicator
-        messages = [message, ...messages];
-      });
+        ChatMessage message = ChatMessage(
+          user: geminiUser,
+          createdAt: DateTime.now(),
+          text: response,
+        );
+
+        setState(() {
+          isTyping = false; // Hide typing indicator
+          messages = [message, ...messages];
+        });
+      }
     });
   }
 
   String _generateResponse(String query) {
-    // Check if the user asked for a graph representation
-    if (query.toLowerCase().contains("graph")) {
-      // Set the showGraph flag to true when the user requests the graph
-      setState(() {
-        showGraph = true;
-      });
-      return "Here's the graph representation of the data.";
-    }
-
     // Check for specific queries and respond with dummy data
     if (query.toLowerCase().contains("name")) {
       return dummyData
@@ -188,70 +194,5 @@ class _HomePageState extends State<HomePage> {
       );
       _sendMessage(chatMessage);
     }
-  }
-
-  Widget _buildGraph() {
-    return SizedBox(
-      height: 300,
-      child: BarChart(
-        BarChartData(
-          titlesData: FlTitlesData(
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: (value, meta) {
-                  return Text(
-                    '',
-                    style: const TextStyle(color: Colors.black),
-                  );
-                },
-                reservedSize: 30,
-              ),
-            ),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: (value, meta) {
-                  if (value >= 0 && value < dummyData.length) {
-                    return Text(
-                      dummyData[value.toInt()]["client_name"] ?? "",
-                      style: const TextStyle(color: Colors.black),
-                    );
-                  }
-                  return const Text("");
-                },
-                reservedSize: 30,
-              ),
-            ),
-          ),
-          barGroups: generateGraphData(
-              "deal_id"), // Make sure "deal_id" is the correct metric
-          borderData: FlBorderData(show: false),
-          alignment: BarChartAlignment.spaceAround,
-          barTouchData: BarTouchData(enabled: false),
-          gridData: FlGridData(show: false),
-        ),
-      ),
-    );
-  }
-
-  // Method to dynamically generate graph data based on a given metric
-  List<BarChartGroupData> generateGraphData(String metric) {
-    List<BarChartGroupData> barChartData = [];
-    for (int i = 0; i < dummyData.length; i++) {
-      double value = double.parse(dummyData[i][metric]!);
-      barChartData.add(
-        BarChartGroupData(
-          x: i,
-          barRods: [
-            BarChartRodData(
-              toY: value,
-              color: Colors.primaries[i % Colors.primaries.length],
-            )
-          ],
-        ),
-      );
-    }
-    return barChartData;
   }
 }
