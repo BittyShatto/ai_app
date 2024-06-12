@@ -93,7 +93,7 @@ class _HomePageState extends State<HomePage> {
     return DashChat(
       inputOptions: InputOptions(trailing: [
         IconButton(
-          onPressed: _sendMediaMessage,
+          onPressed: _sendMediaChatMessage,
           icon: const Icon(Icons.image),
         ),
       ]),
@@ -148,43 +148,43 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _showGraphOptions() {
-  showModalBottomSheet(
-    context: context,
-    builder: (BuildContext context) { 
-      return Container(
-        padding: EdgeInsets.all(16.0),
-        child: Wrap(
-          children: <Widget>[
-            ListTile(
-              leading: Icon(Icons.show_chart),
-              title: Text("Line Graph"),
-              onTap: () {
-                Navigator.pop(context);
-                _showGraphPage(ChartType.line);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.bar_chart),
-              title: Text("Bar Chart"),
-              onTap: () {
-                Navigator.pop(context);
-                _showGraphPage(ChartType.bar);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.pie_chart),
-              title: Text("Pie Chart"),
-              onTap: () {
-                Navigator.pop(context);
-                _showGraphPage(ChartType.pie);
-              },
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) { 
+        return Container(
+          padding: EdgeInsets.all(16.0),
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.show_chart),
+                title: Text("Line Graph"),
+                onTap: () {
+                  Navigator.pop(context);
+                  _showGraphPage(ChartType.line);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.bar_chart),
+                title: Text("Bar Chart"),
+                onTap: () {
+                  Navigator.pop(context);
+                  _showGraphPage(ChartType.bar);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.pie_chart),
+                title: Text("Pie Chart"),
+                onTap: () {
+                  Navigator.pop(context);
+                  _showGraphPage(ChartType.pie);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   void _showGraphPage(ChartType selectedChartType) {
     Navigator.push(
@@ -199,6 +199,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   String _generateResponse(String query) {
+    // Check for specific deal ID
+    RegExp dealIdRegExp = RegExp(r'deal id (\d+)', caseSensitive: false);
+    Match? match = dealIdRegExp.firstMatch(query);
+    if (match != null) {
+      String dealId = match.group(1)!;
+      var deal = dummyData.firstWhere((data) => data['deal_id'] == dealId, orElse: () => {});
+      if (deal.isNotEmpty) {
+        return "Deal ID: ${deal['deal_id']}, Name: ${deal['client_name']}, Customer Code: ${deal['customer_code']}, "
+               "Stage: ${deal['deal_stage']}, Enquiry: ${deal['enquiry']}, Value: ${deal['value']}";
+      } else {
+        return "No deal found with ID $dealId.";
+      }
+    }
+
     // Check for specific queries and respond with dummy data
     if (query.toLowerCase().contains("name")) {
       return dummyData
@@ -221,11 +235,12 @@ class _HomePageState extends State<HomePage> {
               "Deal ID: ${data['deal_id']}, Stage: ${data['deal_stage']}")
           .join("\n");
     }
+
     // Default response if no specific query is matched
     return "Sorry, I didn't understand that. Can you please rephrase?";
   }
 
-  void _sendMediaMessage() async {
+  void _sendMediaChatMessage() async {
     ImagePicker picker = ImagePicker();
     XFile? file = await picker.pickImage(
       source: ImageSource.gallery,
