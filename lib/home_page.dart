@@ -150,7 +150,7 @@ class _HomePageState extends State<HomePage> {
   void _showGraphOptions() {
     showModalBottomSheet(
       context: context,
-      builder: (BuildContext context) { 
+      builder: (BuildContext context) {
         return Container(
           padding: EdgeInsets.all(16.0),
           child: Wrap(
@@ -204,10 +204,11 @@ class _HomePageState extends State<HomePage> {
     Match? match = dealIdRegExp.firstMatch(query);
     if (match != null) {
       String dealId = match.group(1)!;
-      var deal = dummyData.firstWhere((data) => data['deal_id'] == dealId, orElse: () => {});
+      var deal = dummyData.firstWhere((data) => data['deal_id'] == dealId,
+          orElse: () => {});
       if (deal.isNotEmpty) {
         return "Deal ID: ${deal['deal_id']}, Name: ${deal['client_name']}, Customer Code: ${deal['customer_code']}, "
-               "Stage: ${deal['deal_stage']}, Enquiry: ${deal['enquiry']}, Value: ${deal['value']}";
+            "Stage: ${deal['deal_stage']}, Enquiry: ${deal['enquiry']}, Value: ${deal['value']}";
       } else {
         return "No deal found with ID $dealId.";
       }
@@ -234,6 +235,31 @@ class _HomePageState extends State<HomePage> {
           .map((data) =>
               "Deal ID: ${data['deal_id']}, Stage: ${data['deal_stage']}")
           .join("\n");
+    }
+
+    // Handle general sales-related queries
+    if (query.toLowerCase().contains("sales tips")) {
+      return "Here are some sales tips:\n1. Understand your customer's needs.\n2. Build a strong relationship.\n3. Listen more than you talk.\n4. Know your product well.\n5. Follow up after the sale.";
+    } else if (query.toLowerCase().contains("sales strategy")) {
+      return "A good sales strategy includes:\n1. Identifying your target market.\n2. Setting clear objectives.\n3. Creating a value proposition.\n4. Leveraging social proof.\n5. Using data-driven insights.";
+    } else if (query.toLowerCase().contains("customer retention")) {
+      return "To retain customers, focus on:\n1. Providing excellent customer service.\n2. Offering loyalty programs.\n3. Seeking feedback and acting on it.\n4. Personalizing your interactions.\n5. Consistently delivering value.";
+    } else if (query.toLowerCase().contains("lead generation")) {
+      return "Effective lead generation strategies include:\n1. Content marketing.\n2. SEO optimization.\n3. Social media engagement.\n4. Email marketing.\n5. Networking events and webinars.";
+    }
+
+    // Handle general information queries
+    String lowerQuery = query.toLowerCase();
+    if (lowerQuery.contains("hello") || lowerQuery.contains("hi")) {
+      return "Hello! How can I assist you today?";
+    } else if (lowerQuery.contains("how are you")) {
+      return "I'm just a bot, but I'm here to help! How can I assist you?";
+    } else if (lowerQuery.contains("what is your name")) {
+      return "I'm Gemini, your virtual assistant.";
+    } else if (lowerQuery.contains("thank you")) {
+      return "You're welcome!";
+    } else if (lowerQuery.contains("help")) {
+      return "Sure, I'm here to help! You can ask me about deals, sales tips, or any other information you need.";
     }
 
     // Default response if no specific query is matched
