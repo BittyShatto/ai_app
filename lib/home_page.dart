@@ -148,42 +148,43 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _showGraphOptions() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Select Graph Type"),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                GestureDetector(
-                  child: Text("Line Graph"),
-                  onTap: () {
-                    Navigator.pop(context);
-                    _showGraphPage(ChartType.line);
-                  },
-                ),
-                GestureDetector(
-                  child: Text("Bar Chart"),
-                  onTap: () {
-                    Navigator.pop(context);
-                    _showGraphPage(ChartType.bar);
-                  },
-                ),
-                GestureDetector(
-                  child: Text("Pie Chart"),
-                  onTap: () {
-                    Navigator.pop(context);
-                    _showGraphPage(ChartType.pie);
-                  },
-                ),
-              ],
+  showModalBottomSheet(
+    context: context,
+    builder: (BuildContext context) { 
+      return Container(
+        padding: EdgeInsets.all(16.0),
+        child: Wrap(
+          children: <Widget>[
+            ListTile(
+              leading: Icon(Icons.show_chart),
+              title: Text("Line Graph"),
+              onTap: () {
+                Navigator.pop(context);
+                _showGraphPage(ChartType.line);
+              },
             ),
-          ),
-        );
-      },
-    );
-  }
+            ListTile(
+              leading: Icon(Icons.bar_chart),
+              title: Text("Bar Chart"),
+              onTap: () {
+                Navigator.pop(context);
+                _showGraphPage(ChartType.bar);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.pie_chart),
+              title: Text("Pie Chart"),
+              onTap: () {
+                Navigator.pop(context);
+                _showGraphPage(ChartType.pie);
+              },
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
 
   void _showGraphPage(ChartType selectedChartType) {
     Navigator.push(
